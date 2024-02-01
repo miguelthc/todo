@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/todo.dir/main.cpp.o CMakeFiles/todo.dir/cmd/cmd.cpp.o CMakeFiles/todo.dir/options/options.cpp.o -o todo 

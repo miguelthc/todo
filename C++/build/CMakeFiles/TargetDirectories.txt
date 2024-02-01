@@ -1,0 +1,3 @@
+/home/miguel/Documents/Study/todo/build/CMakeFiles/todo.dir
+/home/miguel/Documents/Study/todo/build/CMakeFiles/edit_cache.dir
+/home/miguel/Documents/Study/todo/build/CMakeFiles/rebuild_cache.dir
