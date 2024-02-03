@@ -8,19 +8,21 @@
 #include <functional>
 
 namespace todo_cmd {
-    void help(std::shared_ptr<store::Data_Store<todo_data::todo>>);
-    void get_one(std::shared_ptr<store::Data_Store<todo_data::todo>>);
-    void get_all(std::shared_ptr<store::Data_Store<todo_data::todo>>);
-    void post(std::shared_ptr<store::Data_Store<todo_data::todo>>);
-    void put(std::shared_ptr<store::Data_Store<todo_data::todo>>);
-    void del(std::shared_ptr<store::Data_Store<todo_data::todo>>);
+    using store_t = std::shared_ptr<store::Data_Store<todo_data::todo>>;
+
+    void help(store_t);
+    void get_one(store_t);
+    void get_all(store_t);
+    void post(store_t);
+    void put(store_t);
+    void del(store_t);
 
     void printItem(todo_data::todo);
 
     struct op {
         std::string_view op_text;
         std::string_view op_description;
-        void (*op_f)(std::shared_ptr<store::Data_Store<todo_data::todo>>);
+        void (*op_f)(store_t);
     };
 
     constexpr op HELP ={ "help", "print help menu", help };
@@ -36,5 +38,5 @@ namespace todo_cmd {
 
     constexpr std::string_view UNKNOWN_MSG = "Unkown command; type \"help\" to see available commands";
 
-    int run_cmd(std::shared_ptr<store::Data_Store<todo_data::todo>>);
+    int run_cmd(store_t);
 }
