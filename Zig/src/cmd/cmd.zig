@@ -24,23 +24,8 @@ const stdin = std.io.getStdIn().reader();
 
 pub fn run_app() !void {
     outer: while (true) {
-        try stdout.print(">", .{});
-
-        var line_buf: [22]u8 = undefined;
-        const bytes_read = try stdin.read(&line_buf);
-        if (bytes_read == line_buf.len) {
-            try stdout.print("Input too long\n", .{});
-
-            // TODO there's probably a better way to do this
-            if (line_buf[21] != '\n') {
-                try stdin.skipUntilDelimiterOrEof('\n');
-            }
-
-            return;
-        }
-
-        const command_lws = line_buf[0..(bytes_read - 1)];
-        const command = std.mem.trimLeft(u8, command_lws, " ");
+        var command: []const u8 = undefined;
+        try get_command(&command);
 
         for (ops) |op| {
             if (std.mem.eql(u8, op.op_text, command)) {
@@ -51,6 +36,26 @@ pub fn run_app() !void {
 
         try stdout.print("Unkown command; type \"help\" to see available commands\n", .{});
     }
+}
+
+fn get_command(command: *[]const u8) !void {
+    try stdout.print(">", .{});
+
+    var line_buf: [22]u8 = undefined;
+    const bytes_read = try stdin.read(&line_buf);
+    if (bytes_read == line_buf.len) {
+        try stdout.print("Input too long\n", .{});
+
+        // TODO there's probably a better way to do this
+        if (line_buf[21] != '\n') {
+            try stdin.skipUntilDelimiterOrEof('\n');
+        }
+
+        return;
+    }
+
+    const command_lws = line_buf[0..(bytes_read - 1)];
+    command.* = std.mem.trimLeft(u8, command_lws, " ");
 }
 
 fn help() OpError!void {
