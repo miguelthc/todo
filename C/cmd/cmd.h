@@ -9,16 +9,16 @@
 #define POST "post"
 #define PUT "put"
 #define DELETE "del"
-#define HELP "h"
-#define QUIT "quit"
+#define HELP "help"
+#define QUIT "exit"
 
 #define GET_ONE_DESC "Get one todo item by id"
 #define GET_ALL_DESC "Get all todo items"
 #define POST_DESC "Create one todo item"
-#define PUT_DESC "Update the todo item with the provided id"
-#define DELETE_DESC "Delete the todo item with the provided id"
-#define HELP_DESC "Print this menu"
-#define QUIT_DESC "Exit the program"
+#define PUT_DESC "Update the todo item with the given id"
+#define DELETE_DESC "Delete the todo item with the given id"
+#define HELP_DESC "Print (this) help menu"
+#define QUIT_DESC "Exit program execution"
 
 typedef struct {
     char* command;

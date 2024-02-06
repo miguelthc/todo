@@ -220,6 +220,6 @@ error_t quit(){
 }
 
 error_t err(){
-    printf("Unknown op\n");
+    printf("Unkown command; type \"help\" to see available commands\n");
     return no_err;
 }
