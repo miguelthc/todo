@@ -1,11 +1,29 @@
 const std = @import("std");
 
-pub fn run_app() void {
-    while (true) {
-        // TODO use buffered readers and writers?
-        const stdout = std.io.getStdOut().writer();
-        const stdin = std.io.getStdIn().reader();
+const OpError = error{};
 
+const op_i = struct {
+    op_text: []const u8,
+    op_desc: []const u8,
+    op_fn: *const fn () OpError!void,
+};
+
+const ops = [_]op_i{
+    .{ .op_text = "help", .op_desc = "Print (this) help menu", .op_fn = &help },
+    .{ .op_text = "exit", .op_desc = "Exit program execution", .op_fn = &exit },
+    .{ .op_text = "get", .op_desc = "Get one todo item by id", .op_fn = &get_one },
+    .{ .op_text = "all", .op_desc = "Get all todo items", .op_fn = &get_all },
+    .{ .op_text = "post", .op_desc = "Create one todo item", .op_fn = &post },
+    .{ .op_text = "put", .op_desc = "Update the todo item with the given id", .op_fn = &put },
+    .{ .op_text = "del", .op_desc = "Delete the todo item with the given id", .op_fn = &del },
+};
+
+// TODO use buffered readers and writers?
+const stdout = std.io.getStdOut().writer();
+const stdin = std.io.getStdIn().reader();
+
+pub fn run_app() !void {
+    outer: while (true) {
         try stdout.print(">", .{});
 
         var line_buf: [22]u8 = undefined;
@@ -21,6 +39,44 @@ pub fn run_app() void {
             return;
         }
 
-        // TODO parse commands
+        const command_lws = line_buf[0..(bytes_read - 1)];
+        const command = std.mem.trimLeft(u8, command_lws, " ");
+
+        for (ops) |op| {
+            if (std.mem.eql(u8, op.op_text, command)) {
+                try op.op_fn();
+                continue :outer;
+            }
+        }
+
+        try stdout.print("Unkown command; type \"help\" to see available commands\n", .{});
     }
+}
+
+fn help() OpError!void {
+    // TODO
+}
+
+fn exit() OpError!void {
+    // TODO
+}
+
+fn get_one() OpError!void {
+    // TODO
+}
+
+fn get_all() OpError!void {
+    // TODO
+}
+
+fn post() OpError!void {
+    // TODO
+}
+
+fn put() OpError!void {
+    // TODO
+}
+
+fn del() OpError!void {
+    // TODO
 }

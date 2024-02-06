@@ -5,5 +5,5 @@ pub fn main() !void {
 
     // TODO parse command line args
 
-    cmd.run_app();
+    try cmd.run_app();
 }
