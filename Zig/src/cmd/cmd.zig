@@ -1,6 +1,6 @@
 const std = @import("std");
 
-const OpError = error{};
+const OpError = error{Print};
 
 const op_i = struct {
     op_text: []const u8,
@@ -59,7 +59,23 @@ fn get_command(command: *[]const u8) !void {
 }
 
 fn help() OpError!void {
-    // TODO
+    //              123456789012
+    const max_ws = "            ";
+
+    stdout.print("\n", .{}) catch {
+        return error.Print;
+    };
+
+    for (ops) |op| {
+        const ws = max_ws[0..(max_ws.len - op.op_text.len)];
+        stdout.print("{s}{s}{s}\n", .{ op.op_text, ws, op.op_desc }) catch {
+            return error.Print;
+        };
+    }
+
+    stdout.print("\n", .{}) catch {
+        return error.Print;
+    };
 }
 
 fn exit() OpError!void {
