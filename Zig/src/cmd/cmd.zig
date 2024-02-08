@@ -79,7 +79,7 @@ fn help() OpError!void {
 }
 
 fn exit() OpError!void {
-    // TODO
+    std.process.exit(0);
 }
 
 fn get_one() OpError!void {
