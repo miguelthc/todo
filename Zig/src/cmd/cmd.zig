@@ -1,11 +1,12 @@
 const std = @import("std");
+const mem = @import("../data/mem.zig");
 
-const OpError = error{Print};
+const CmdError = error{Print};
 
 const op_i = struct {
     op_text: []const u8,
     op_desc: []const u8,
-    op_fn: *const fn () OpError!void,
+    op_fn: *const fn () CmdError!void,
 };
 
 const ops = [_]op_i{
@@ -58,7 +59,7 @@ fn get_command(command: *[]const u8) !void {
     command.* = std.mem.trimLeft(u8, command_lws, " ");
 }
 
-fn help() OpError!void {
+fn help() CmdError!void {
     //              123456789012
     const max_ws = "            ";
 
@@ -78,26 +79,26 @@ fn help() OpError!void {
     };
 }
 
-fn exit() OpError!void {
+fn exit() CmdError!void {
     std.process.exit(0);
 }
 
-fn get_one() OpError!void {
+fn get_one() CmdError!void {
     // TODO
 }
 
-fn get_all() OpError!void {
+fn get_all() CmdError!void {
     // TODO
 }
 
-fn post() OpError!void {
+fn post() CmdError!void {
     // TODO
 }
 
-fn put() OpError!void {
+fn put() CmdError!void {
     // TODO
 }
 
-fn del() OpError!void {
+fn del() CmdError!void {
     // TODO
 }
