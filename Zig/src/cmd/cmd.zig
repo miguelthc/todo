@@ -1,4 +1,5 @@
 const std = @import("std");
+const data = @import("../data/data.zig");
 const mem = @import("../data/mem.zig");
 
 const CmdError = error{Print};
@@ -18,6 +19,16 @@ const ops = [_]op_i{
     .{ .op_text = "put", .op_desc = "Update the todo item with the given id", .op_fn = &put },
     .{ .op_text = "del", .op_desc = "Delete the todo item with the given id", .op_fn = &del },
 };
+
+fn ops_max_length() comptime_int {
+    var max_len: comptime_int = 0;
+    for (ops) |op| {
+        if (op.op_text.len > max_len) {
+            max_len = op.op_text.len;
+        }
+    }
+    return max_len;
+}
 
 // TODO use buffered readers and writers?
 const stdout = std.io.getStdOut().writer();
@@ -40,23 +51,19 @@ pub fn run_app() !void {
 }
 
 fn get_command(command: *[]const u8) !void {
-    try stdout.print(">", .{});
+    try stdout.print("> ", .{});
 
-    var line_buf: [22]u8 = undefined;
-    const bytes_read = try stdin.read(&line_buf);
-    if (bytes_read == line_buf.len) {
-        try stdout.print("Input too long\n", .{});
+    const res = read_stdin_to_buffer(ops_max_length()) catch |err|
+        switch (err) {
+        error.BufferOverflow => {
+            try stdout.print("Input too long\n", .{});
+            return;
+        },
+        else => |e| return e,
+    };
 
-        // TODO there's probably a better way to do this
-        if (line_buf[21] != '\n') {
-            try stdin.skipUntilDelimiterOrEof('\n');
-        }
-
-        return;
-    }
-
-    const command_lws = line_buf[0..(bytes_read - 1)];
-    command.* = std.mem.trimLeft(u8, command_lws, " ");
+    command.* = res.buf[0..res.bytes_read];
+    command.* = std.mem.trimLeft(u8, command.*, " ");
 }
 
 fn help() CmdError!void {
@@ -84,7 +91,15 @@ fn exit() CmdError!void {
 }
 
 fn get_one() CmdError!void {
-    // TODO
+    stdout.print("id: ", .{}) catch {
+        return CmdError.Print;
+    };
+
+    // TODO parse id
+
+    //mem.get_one(id: u64)
+
+    //print_item(item: mem.todo_item)
 }
 
 fn get_all() CmdError!void {
@@ -92,6 +107,10 @@ fn get_all() CmdError!void {
 }
 
 fn post() CmdError!void {
+    stdout.print("text: ", .{}) catch {
+        return CmdError.Print;
+    };
+
     // TODO
 }
 
@@ -101,4 +120,27 @@ fn put() CmdError!void {
 
 fn del() CmdError!void {
     // TODO
+}
+
+fn print_item(item: data.todo_item) !void {
+    try stdout.println("****************", .{});
+    try stdout.println("Id: {}", .{item.id});
+    try stdout.println("Text: {s}", .{item.text});
+    //printf("Completed: %s\n", item.completed ? "true" : "false");
+    try stdout.println("****************");
+}
+
+fn read_stdin_to_buffer(comptime max_length: comptime_int) !struct { buf: [max_length]u8, bytes_read: usize } {
+    var line_buf: [max_length + 2]u8 = undefined;
+    const bytes_read = try stdin.read(&line_buf);
+    if (bytes_read == line_buf.len) {
+        // TODO there's probably a better way to do this
+        if (line_buf[max_length + 1] != '\n') {
+            try stdin.skipUntilDelimiterOrEof('\n');
+        }
+
+        return error.BufferOverflow;
+    }
+
+    return .{ .buf = line_buf[0..max_length].*, .bytes_read = bytes_read - 1 };
 }
