@@ -28,6 +28,9 @@ pub fn put(id: u64, item: data.todo_item) !void {
     try map.put(id, item);
 }
 
-pub fn del() void {
-    // TODO
+pub fn del(id: u64) ?data.todo_item {
+    const item = map.get(id);
+    map.remove(id);
+
+    return item;
 }
