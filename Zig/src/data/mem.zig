@@ -15,11 +15,17 @@ pub fn get_all() map.ValueIterator {
 
 pub fn post(item: data.todo_item) !u64 {
     id_counter += 1;
+    item.id = id_counter;
     try map.put(id_counter, item);
 }
 
-pub fn put() void {
-    // TODO
+pub fn put(id: u64, item: data.todo_item) !void {
+    if(map.contains(id)){
+        return error{AlreadyExists};
+    }
+
+    item.id = id;
+    try map.put(id, item);
 }
 
 pub fn del() void {
