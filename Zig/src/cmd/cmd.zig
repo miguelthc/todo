@@ -126,7 +126,7 @@ fn print_item(item: data.todo_item) !void {
     try stdout.println("****************", .{});
     try stdout.println("Id: {}", .{item.id});
     try stdout.println("Text: {s}", .{item.text});
-    //printf("Completed: %s\n", item.completed ? "true" : "false");
+    try stdout.println("Completed: {s}", .{if(item.completed) "true" else "false"});
     try stdout.println("****************");
 }
 
